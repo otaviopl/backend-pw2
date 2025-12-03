@@ -26,7 +26,7 @@ app.get("/health", (_req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Servidor iniciado em http://localhost:${PORT}`);
+  console.log(`Server started at http://localhost:${PORT}`);
 });
 
 

@@ -10,7 +10,7 @@ function toNumber(value) {
   return Number.isFinite(n) ? n : NaN;
 }
 
-// GET /alunos/medias -> nome e média
+// GET /alunos/medias -> name and average
 router.get("/medias", (_req, res) => {
   const dados = store.alunos.map((a) => {
     const media = (toNumber(a.nota1) + toNumber(a.nota2)) / 2;
@@ -19,7 +19,7 @@ router.get("/medias", (_req, res) => {
   return res.json(dados);
 });
 
-// GET /alunos/aprovados -> nome e status
+// GET /alunos/aprovados -> name and status
 router.get("/aprovados", (_req, res) => {
   const dados = store.alunos.map((a) => {
     const media = (toNumber(a.nota1) + toNumber(a.nota2)) / 2;
@@ -29,12 +29,12 @@ router.get("/aprovados", (_req, res) => {
   return res.json(dados);
 });
 
-// GET /alunos -> todos os alunos
+// GET /alunos -> all students
 router.get("/", (_req, res) => {
   return res.json(store.alunos);
 });
 
-// GET /alunos/:id -> aluno específico
+// GET /alunos/:id -> specific student
 router.get("/:id", (req, res) => {
   const id = Number.parseInt(req.params.id, 10);
   if (!Number.isInteger(id)) {
@@ -47,7 +47,7 @@ router.get("/:id", (req, res) => {
   return res.json(aluno);
 });
 
-// POST /alunos -> cria aluno
+// POST /alunos -> create student
 router.post("/", (req, res) => {
   const { nome, ra, nota1, nota2 } = req.body || {};
   if (!nome || !ra) {
@@ -69,7 +69,7 @@ router.post("/", (req, res) => {
   return res.status(201).json(aluno);
 });
 
-// PUT /alunos/:id -> altera aluno
+// PUT /alunos/:id -> update student
 router.put("/:id", (req, res) => {
   const id = Number.parseInt(req.params.id, 10);
   if (!Number.isInteger(id)) {
@@ -99,7 +99,7 @@ router.put("/:id", (req, res) => {
   return res.json(aluno);
 });
 
-// DELETE /alunos/:id -> remove aluno
+// DELETE /alunos/:id -> remove student
 router.delete("/:id", (req, res) => {
   const id = Number.parseInt(req.params.id, 10);
   if (!Number.isInteger(id)) {
