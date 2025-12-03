@@ -10,24 +10,6 @@ function toNumber(value) {
   return Number.isFinite(n) ? n : NaN;
 }
 
-// GET /alunos -> todos os alunos
-router.get("/", (_req, res) => {
-  return res.json(store.alunos);
-});
-
-// GET /alunos/:id -> aluno específico
-router.get("/:id", (req, res) => {
-  const id = Number.parseInt(req.params.id, 10);
-  if (!Number.isInteger(id)) {
-    return res.status(400).json({ error: "id inválido" });
-  }
-  const aluno = store.alunos.find((a) => a.id === id);
-  if (!aluno) {
-    return res.status(404).json({ error: "Aluno não encontrado" });
-  }
-  return res.json(aluno);
-});
-
 // GET /alunos/medias -> nome e média
 router.get("/medias", (_req, res) => {
   const dados = store.alunos.map((a) => {
@@ -47,16 +29,34 @@ router.get("/aprovados", (_req, res) => {
   return res.json(dados);
 });
 
+// GET /alunos -> todos os alunos
+router.get("/", (_req, res) => {
+  return res.json(store.alunos);
+});
+
+// GET /alunos/:id -> aluno específico
+router.get("/:id", (req, res) => {
+  const id = Number.parseInt(req.params.id, 10);
+  if (!Number.isInteger(id)) {
+    return res.status(400).json({ message: "id inválido" });
+  }
+  const aluno = store.alunos.find((a) => a.id === id);
+  if (!aluno) {
+    return res.status(404).json({ message: "Aluno não encontrado!" });
+  }
+  return res.json(aluno);
+});
+
 // POST /alunos -> cria aluno
 router.post("/", (req, res) => {
   const { nome, ra, nota1, nota2 } = req.body || {};
   if (!nome || !ra) {
-    return res.status(400).json({ error: "nome e ra são obrigatórios" });
+    return res.status(400).json({ message: "nome e ra são obrigatórios" });
   }
   const n1 = toNumber(nota1);
   const n2 = toNumber(nota2);
   if (!Number.isFinite(n1) || !Number.isFinite(n2)) {
-    return res.status(400).json({ error: "nota1 e nota2 devem ser números" });
+    return res.status(400).json({ message: "nota1 e nota2 devem ser números" });
   }
   const aluno = {
     id: getNextAlunoId(),
@@ -73,11 +73,11 @@ router.post("/", (req, res) => {
 router.put("/:id", (req, res) => {
   const id = Number.parseInt(req.params.id, 10);
   if (!Number.isInteger(id)) {
-    return res.status(400).json({ error: "id inválido" });
+    return res.status(400).json({ message: "id inválido" });
   }
   const aluno = store.alunos.find((a) => a.id === id);
   if (!aluno) {
-    return res.status(404).json({ error: "Aluno não encontrado" });
+    return res.status(404).json({ message: "Aluno não encontrado!" });
   }
   const { nome, ra, nota1, nota2 } = req.body || {};
   if (nome !== undefined) aluno.nome = String(nome);
@@ -85,14 +85,14 @@ router.put("/:id", (req, res) => {
   if (nota1 !== undefined) {
     const n1 = toNumber(nota1);
     if (!Number.isFinite(n1)) {
-      return res.status(400).json({ error: "nota1 deve ser número" });
+      return res.status(400).json({ message: "nota1 deve ser número" });
     }
     aluno.nota1 = n1;
   }
   if (nota2 !== undefined) {
     const n2 = toNumber(nota2);
     if (!Number.isFinite(n2)) {
-      return res.status(400).json({ error: "nota2 deve ser número" });
+      return res.status(400).json({ message: "nota2 deve ser número" });
     }
     aluno.nota2 = n2;
   }
@@ -103,11 +103,11 @@ router.put("/:id", (req, res) => {
 router.delete("/:id", (req, res) => {
   const id = Number.parseInt(req.params.id, 10);
   if (!Number.isInteger(id)) {
-    return res.status(400).json({ error: "id inválido" });
+    return res.status(400).json({ message: "id inválido" });
   }
   const idx = store.alunos.findIndex((a) => a.id === id);
   if (idx === -1) {
-    return res.status(404).json({ error: "Aluno não encontrado" });
+    return res.status(404).json({ message: "Aluno não encontrado!" });
   }
   const [removed] = store.alunos.splice(idx, 1);
   return res.json(removed);
