@@ -51,49 +51,38 @@ function makeRequest(method, path, data = null, useToken = false) {
 }
 
 async function runTests() {
-  console.log("=== Testando API ===\n");
+  let passed = 0;
+  let failed = 0;
 
   try {
     // 1. Healthcheck
-    console.log("1. Testing Healthcheck...");
     const health = await makeRequest("GET", "/health");
-    console.log(`Status: ${health.status}`);
-    console.log("Resposta:", JSON.stringify(health.data, null, 2));
-    console.log("---\n");
+    if (health.status === 200) passed++; else failed++;
 
     // 2. Register user
-    console.log("2. Registering new user...");
     const register = await makeRequest("POST", "/register", {
       username: "testuser",
       password: "testpass123",
     });
-    console.log(`Status: ${register.status}`);
-    console.log("Resposta:", JSON.stringify(register.data, null, 2));
-    console.log("---\n");
+    if (register.status === 201) passed++; else failed++;
 
     // 3. Login
-    console.log("3. Logging in...");
     const login = await makeRequest("POST", "/login", {
       username: "testuser",
       password: "testpass123",
     });
-    console.log(`Status: ${login.status}`);
-    console.log("Resposta:", JSON.stringify(login.data, null, 2));
-    if (login.data.token) {
+    if (login.status === 200 && login.data.token) {
       token = login.data.token;
-      console.log(`Token obtained: ${token.substring(0, 20)}...`);
+      passed++;
+    } else {
+      failed++;
     }
-    console.log("---\n");
 
     // 4. List students (protected)
-    console.log("4. Listing students (protected endpoint)...");
     const alunos = await makeRequest("GET", "/alunos", null, true);
-    console.log(`Status: ${alunos.status}`);
-    console.log("Resposta:", JSON.stringify(alunos.data, null, 2));
-    console.log("---\n");
+    if (alunos.status === 200) passed++; else failed++;
 
     // 5. Create student (protected)
-    console.log("5. Creating new student...");
     const createAluno = await makeRequest(
       "POST",
       "/alunos",
@@ -105,37 +94,25 @@ async function runTests() {
       },
       true
     );
-    console.log(`Status: ${createAluno.status}`);
-    console.log("Resposta:", JSON.stringify(createAluno.data, null, 2));
     const alunoId = createAluno.data?.id;
-    console.log("---\n");
+    if (createAluno.status === 201) passed++; else failed++;
 
     // 6. Get specific student
     if (alunoId) {
-      console.log(`6. Getting student ID ${alunoId}...`);
       const aluno = await makeRequest(`GET`, `/alunos/${alunoId}`, null, true);
-      console.log(`Status: ${aluno.status}`);
-      console.log("Resposta:", JSON.stringify(aluno.data, null, 2));
-      console.log("---\n");
+      if (aluno.status === 200) passed++; else failed++;
     }
 
     // 7. List averages
-    console.log("7. Listing student averages...");
     const medias = await makeRequest("GET", "/alunos/medias", null, true);
-    console.log(`Status: ${medias.status}`);
-    console.log("Resposta:", JSON.stringify(medias.data, null, 2));
-    console.log("---\n");
+    if (medias.status === 200) passed++; else failed++;
 
     // 8. List approved/rejected
-    console.log("8. Listing approved/rejected students...");
     const aprovados = await makeRequest("GET", "/alunos/aprovados", null, true);
-    console.log(`Status: ${aprovados.status}`);
-    console.log("Resposta:", JSON.stringify(aprovados.data, null, 2));
-    console.log("---\n");
+    if (aprovados.status === 200) passed++; else failed++;
 
     // 9. Update student
     if (alunoId) {
-      console.log(`9. Updating student ID ${alunoId}...`);
       const update = await makeRequest(
         "PUT",
         `/alunos/${alunoId}`,
@@ -145,29 +122,21 @@ async function runTests() {
         },
         true
       );
-      console.log(`Status: ${update.status}`);
-      console.log("Resposta:", JSON.stringify(update.data, null, 2));
-      console.log("---\n");
+      if (update.status === 200) passed++; else failed++;
     }
 
     // 10. Test without token (should fail)
-    console.log("10. Testing protected endpoint without token (should fail)...");
     const noToken = await makeRequest("GET", "/alunos");
-    console.log(`Status: ${noToken.status}`);
-    console.log("Resposta:", JSON.stringify(noToken.data, null, 2));
-    console.log("---\n");
+    if (noToken.status === 401) passed++; else failed++;
 
     // 11. Test with invalid token (should fail)
-    console.log("11. Testing protected endpoint with invalid token (should fail)...");
     const oldToken = token;
     token = "token_invalido_123";
     const invalidToken = await makeRequest("GET", "/alunos", null, true);
     token = oldToken;
-    console.log(`Status: ${invalidToken.status}`);
-    console.log("Resposta:", JSON.stringify(invalidToken.data, null, 2));
-    console.log("---\n");
+    if (invalidToken.status === 401) passed++; else failed++;
 
-    console.log("=== Tests completed ===");
+    console.log(`Tests completed: ${passed} passed, ${failed} failed`);
   } catch (error) {
     console.error("Error during tests:", error.message);
     process.exit(1);
