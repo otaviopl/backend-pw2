@@ -25,8 +25,18 @@ app.get("/health", (_req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Server started at http://localhost:${PORT}`);
+});
+
+server.on("error", (err) => {
+  if (err.code === "EADDRINUSE") {
+    console.error(`Port ${PORT} is already in use. Please stop the other process or use a different port.`);
+    process.exit(1);
+  } else {
+    console.error("Server error:", err);
+    process.exit(1);
+  }
 });
 
 

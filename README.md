@@ -2,6 +2,31 @@
 
 API REST desenvolvida em Node.js/Express para gerenciamento de alunos com autenticação JWT.
 
+## Início Rápido
+
+```bash
+# 1. Inicializar fnm (se usar fnm) ou usar nvm (se usar nvm)
+# Para fnm:
+eval "$(fnm env --use-on-cd)"
+fnm use
+
+# Para nvm:
+# nvm use
+
+# 2. Instalar dependências
+pnpm install
+
+# 3. Executar o servidor
+pnpm start
+
+# Ou em modo desenvolvimento (com auto-reload):
+pnpm dev
+```
+
+O servidor estará disponível em `http://localhost:3000`
+
+**Nota:** O arquivo `.env` já está configurado e incluído no repositório, então não é necessário criar ou modificar nada.
+
 ## Características
 
 - Autenticação JWT (JSON Web Tokens)
@@ -18,30 +43,59 @@ git clone <url-do-repositorio>
 cd backend-pw2
 ```
 
-2. Instale as dependências:
+2. Use a versão correta do Node.js:
 ```bash
-npm install
+# Se usar fnm:
+eval "$(fnm env --use-on-cd)"
+fnm use
+
+# Se usar nvm:
+# nvm use
 ```
 
-3. O arquivo `.env` já está configurado com as variáveis necessárias:
+3. Instale as dependências:
+```bash
+pnpm install
+```
+
+4. O arquivo `.env` já está incluído no repositório e configurado com as variáveis necessárias. Não é necessário criar ou modificar nada - o projeto está pronto para uso:
 ```
 JWT_SECRET=minha_chave_secreta_super_segura_123456789
 PORT=3000
 ```
 
+**Nota:** O arquivo `.env` já vem configurado no repositório, então após clonar e instalar as dependências, você pode executar o servidor diretamente.
+
 ## Executando
 
 ### Modo produção:
 ```bash
-npm start
+pnpm start
 ```
 
-### Modo desenvolvimento (com nodemon):
+O servidor iniciará e você verá a mensagem:
+```
+Server started at http://localhost:3000
+```
+
+### Modo desenvolvimento (com nodemon - auto-reload):
 ```bash
-npm run dev
+pnpm dev
 ```
 
-O servidor estará disponível em `http://localhost:3000`
+O servidor reiniciará automaticamente quando você modificar arquivos.
+
+### Testar a API:
+
+Após iniciar o servidor, você pode testar usando os scripts incluídos:
+
+```bash
+# Script Node.js
+node test-api.js
+
+# Script Bash (requer jq)
+./test-api.sh
+```
 
 ## Endpoints
 
@@ -287,8 +341,9 @@ backend-pw2/
 
 - Os dados são armazenados em memória e serão perdidos ao reiniciar o servidor
 - O token JWT expira em 1 hora
-- A chave secreta JWT está no arquivo `.env`
-- O servidor requer Node.js 14+ (recomendado Node.js 18+)
+- O arquivo `.env` já está incluído no repositório com a chave secreta JWT configurada - não é necessário criar ou modificar
+- O servidor requer Node.js 18+ (especificado no `.nvmrc`)
+- O projeto usa `pnpm` como gerenciador de pacotes
 
 ## Licença
 
